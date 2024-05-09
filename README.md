@@ -3,7 +3,7 @@
 There are 2 versions of build:
 
 - library to be used in vue projects
-- static to be used in non vue projects like mars ghost blog, mars hugo docs
+- static to be used in non vue projects like mars hugo docs
 
 ```sh
 yarn build
