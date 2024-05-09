@@ -1,7 +1,7 @@
 {
   "name": "mars-iubenda-vite",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "files": [
     "dist"
@@ -19,8 +19,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build && vue-tsc --noEmit false --emitDeclarationOnly && tsc -p tsconfig-static.json",
-    "build-static": "tsc -p tsconfig-static.json",
+    "build": "vue-tsc && vite build && vue-tsc --noEmit false --emitDeclarationOnly && npx vite build --config vite.config-static.ts",
+    "build-static": "npx vite build --config vite.config-static.ts",
     "build-lib": "vue-tsc && vite build && vue-tsc --noEmit false --emitDeclarationOnly",
     "types": "vue-tsc ",
     "preview": "vite preview"

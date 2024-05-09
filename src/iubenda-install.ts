@@ -6,12 +6,70 @@ declare global {
     dataLayer: any
     __iubCategories: any
     _iub: any
+    __lc: any
+    LogRocket: any
+    mt: any
   }
 }
 
 declare let process: any
 
+// helper function to extract cookie the hard way
+const getCookie = function(name: string) {
+  return document.cookie
+  .split("; ")
+  .find((row) => row.startsWith(name+'='))
+  ?.split("=")[1];
+}
+
+interface UserInfo {
+  user_id: string
+  team_id: string
+  user_plan: string
+}
+const enableLevel = function(level: number, userInfo: UserInfo) {
+  console.log("Iubenda enable level", level)
+  switch(level) {
+    case 1:
+      // TODO: enable logrocket script when we have enough traffic?
+      // TODO: load logrocket library
+      // window.LogRocket && window.LogRocket.init('sjxbwd/myarstudio-website');
+      // console.log("Iubenda -> lvl 1  : logrocket");
+      break
+    case 2:
+      // LiveChat
+      console.log("Iubenda -> LiveChat");
+      window.__lc = window.__lc || {};
+      window.__lc.license = 12709530;
+      // @ts-ignore
+      (function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+      break
+    case 3:
+      break
+    case 4:
+      // Google TagManager
+      console.log("Iubenda -> GTag");
+      // @ts-ignore
+      (function (w, d, s, l, i) {w[l] = w[l] || []; w[l].push({'gtm.start':new Date().getTime(),event: 'gtm.js'}); const f = d.getElementsByTagName(s)[0];const j = d.createElement(s); const dl = l !== 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f)
+      })(window, document, 'script', 'dataLayer', 'GTM-K9HP22W')
+      break
+    case 5:
+      // Mautic
+      console.log("Iubenda -> Mautic");
+      // Note: using cached version of mtc.js: see script in /var/www/html/cache-mtc.sh on the mautic web server
+      // @ts-ignore
+      (function(w,d,t,u,n,a,m){w['MauticTrackingObject']=n; w[n]=w[n]||function(){(w[n].q=w[n].q||[]).push(arguments)},a=d.createElement(t),m=d.getElementsByTagName(t)[0];a.async=1;a.src=u;m.parentNode.insertBefore(a,m)})(window,document,'script','https://ma.myarstudio.cloud/media/js/mtc.js','mt');
+      if (userInfo && userInfo.user_id) {
+        (window).mt('send', 'pageview', { panel_user_id: userInfo.user_id })
+      } else {
+        (window).mt('send', 'pageview')
+      }      
+      break
+  }
+}
+
 const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, $store: any = undefined, baseUrl: string = 'https://www.myarstudio.cloud') {
+  console.log("installIubenda7", lang, iubendaShouldLog)
   const siteId = 2701995
   const cookiePolicies : {[id: string]: number} = {
     'en': 20018456,
@@ -44,8 +102,24 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
 
   if ($store) { $store.dispatch('iubenda/setShouldLog', iubendaShouldLog) }
 
-  // process.client is used in nuxt.js build
-  if (process === undefined || (process.client !== undefined && process.client)) {
+
+  // let shallInstall = false
+
+  // try {
+  //   // process.client is used in nuxt.js build
+  //   console.log("process", process, "process.client", process && process.client || false)
+  //   if(process && process.client) {
+  //     shallInstall = true
+  //   }
+  // } catch(e)  {
+  //   // process is not defined, we are in client mode
+  //   console.log("Iubenda Install catch")
+  // }
+  const shallInstall = true
+
+  console.log("shallInstall", shallInstall)
+
+  if( shallInstall ) {
     const dataLayer = window.dataLayer || null
     iubendaShouldLog &&
       console.log('App.vue installIubenda language: ', lang,
@@ -127,6 +201,21 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
                   }
                   if ($store) { $store.dispatch('iubenda/setConsetGivenPurpose', { iPurpose: purposeId, bValue: true }) }
                   iubendaShouldLog && console.log('Iubenda cb: GTag dataLayer push ', 'iubenda_consent_given_purpose_' + purposeId)
+
+
+                  // detect if we have user info
+                  const cookieValue = getCookie('mars_user_info')
+                  console.log('mars cookie user', cookieValue)
+                  const userInfo = cookieValue && JSON.parse(cookieValue)
+                  if (userInfo && userInfo.user_id && userInfo.team_id && userInfo.user_plan) {
+                    window.dataLayer = window.dataLayer || []
+                    window.dataLayer.push({
+                      user_id: userInfo.user_id,
+                      team_id: userInfo.team_id,
+                      user_plan: userInfo.user_plan
+                    })
+                  }
+                  enableLevel(+purposeId, userInfo)
                 }
               }
             }
@@ -145,7 +234,8 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
       // There is one file per language: they have been modified to encapsulate the iubenda elements
       // with a <section> element to avoid double H1 in page
       { src: `${baseUrl}/js/iubenda/iubenda_cs.js`, charset: 'UTF-8', async: '' },
-      { src: `${baseUrl}/js/debugIubendaBootstrap.js`, charset: 'UTF-8', async: '' },
+      // integrated into this script: no longer needed the external bootstrap
+      // { src: `${baseUrl}/js/iubendaBootstrap.js`, charset: 'UTF-8', async: '' },
 
       // old setup:
       // { src: '/js/debugIubendaBootstrap.js' },
@@ -165,3 +255,5 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
 }
 
 export default installIubenda
+
+// TODO: add non-vue helpers to detect level and which features are enabled
