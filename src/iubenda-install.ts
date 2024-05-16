@@ -35,6 +35,12 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
       // TODO: load logrocket library
       // window.LogRocket && window.LogRocket.init('sjxbwd/myarstudio-website');
       // console.log("Iubenda -> lvl 1  : logrocket");
+
+      // Google TagManager: with Consent mode v2 it should honor the user preferences
+      console.log("Iubenda -> GTag");
+      // @ts-ignore
+      (function (w, d, s, l, i) {w[l] = w[l] || []; w[l].push({'gtm.start':new Date().getTime(),event: 'gtm.js'}); const f = d.getElementsByTagName(s)[0];const j = d.createElement(s); const dl = l !== 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f)
+      })(window, document, 'script', 'dataLayer', 'GTM-K9HP22W')
       break
     case 2:
       // LiveChat
@@ -47,11 +53,6 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
     case 3:
       break
     case 4:
-      // Google TagManager
-      console.log("Iubenda -> GTag");
-      // @ts-ignore
-      (function (w, d, s, l, i) {w[l] = w[l] || []; w[l].push({'gtm.start':new Date().getTime(),event: 'gtm.js'}); const f = d.getElementsByTagName(s)[0];const j = d.createElement(s); const dl = l !== 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f)
-      })(window, document, 'script', 'dataLayer', 'GTM-K9HP22W')
       break
     case 5:
       // Mautic
@@ -69,7 +70,7 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
 }
 
 const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, $store: any = undefined, baseUrl: string = 'https://www.myarstudio.cloud') {
-  console.log("installIubenda7", lang, iubendaShouldLog)
+  console.log("installIubenda8", lang, iubendaShouldLog)
   const siteId = 2701995
   const cookiePolicies : {[id: string]: number} = {
     'en': 20018456,
