@@ -9,6 +9,13 @@ declare global {
     __lc: any
     LogRocket: any
     mt: any
+    iub: {
+      level1: boolean
+      level2: boolean
+      level3: boolean
+      level4: boolean
+      level5: boolean
+    }
   }
 }
 
@@ -41,6 +48,8 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
       // @ts-ignore
       (function (w, d, s, l, i) {w[l] = w[l] || []; w[l].push({'gtm.start':new Date().getTime(),event: 'gtm.js'}); const f = d.getElementsByTagName(s)[0];const j = d.createElement(s); const dl = l !== 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f)
       })(window, document, 'script', 'dataLayer', 'GTM-K9HP22W')
+
+      window.iub.level1 = true
       break
     case 2:
       // LiveChat
@@ -49,10 +58,14 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
       window.__lc.license = 12709530;
       // @ts-ignore
       (function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+      
+      window.iub.level2 = true
       break
     case 3:
+      window.iub.level3 = true
       break
     case 4:
+      window.iub.level4 = true
       break
     case 5:
       // Mautic
@@ -64,13 +77,21 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
         (window).mt('send', 'pageview', { panel_user_id: userInfo.user_id })
       } else {
         (window).mt('send', 'pageview')
-      }      
+      }
+      window.iub.level5 = true
       break
   }
 }
 
 const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, $store: any = undefined, baseUrl: string = 'https://www.myarstudio.cloud') {
-  console.log("installIubenda8", lang, iubendaShouldLog)
+  console.log("installIubenda9", lang, iubendaShouldLog)
+  window.iub = {
+    level1: false,
+    level2: false,
+    level3: false,
+    level4: false,
+    level5: false
+  }
   const siteId = 2701995
   const cookiePolicies : {[id: string]: number} = {
     'en': 20018456,
@@ -257,4 +278,3 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
 
 export default installIubenda
 
-// TODO: add non-vue helpers to detect level and which features are enabled
