@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import { resolve } from "path";
 import fs from 'node:fs/promises';
 // import vue from '@vitejs/plugin-vue'
-import vue from '@vitejs/plugin-vue2'
+import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({

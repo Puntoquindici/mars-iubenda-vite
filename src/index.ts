@@ -1,7 +1,6 @@
-import IubendaStore, {State} from "./store/IubendaStore"
-import IubendaMixin from "./mixins/IubendaMixin"
+import { useIubendaStore, IubendaStore } from "./store/IubendaStore"
+import { useIubenda } from "./mixins/IubendaMixin"
 import installIubenda from "./iubenda-install"
 
-export { IubendaStore, IubendaMixin, installIubenda }
-export type { State }
-
+export { useIubendaStore, useIubenda, installIubenda }
+export type { IubendaStore }

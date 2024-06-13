@@ -1,3 +1,5 @@
+import type { IubendaStore } from "./store/IubendaStore"
+
 /******************************************************************************
  * Iubenda setup and install
  *****************************************************************************/
@@ -83,8 +85,8 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
   }
 }
 
-const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, $store: any = undefined, baseUrl: string = 'https://www.myarstudio.cloud') {
-  console.log("installIubenda9", lang, iubendaShouldLog)
+const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, $store: IubendaStore | undefined = undefined, baseUrl: string = 'https://www.myarstudio.cloud') {
+  console.log("installIubenda10", lang, iubendaShouldLog)
   window.iub = {
     level1: false,
     level2: false,
@@ -122,7 +124,7 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
     'textColor': '#000000'
   }
 
-  if ($store) { $store.dispatch('iubenda/setShouldLog', iubendaShouldLog) }
+  if ($store) { $store.setShouldLog(iubendaShouldLog) }
 
 
   // let shallInstall = false
@@ -183,7 +185,7 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
               iubenda_ccpa_opted_out: ccpaOptedOut
             })
           }
-          if ($store) { $store.dispatch('iubenda/setCcpaOptedOut', ccpaOptedOut) }
+          if ($store) { $store.setCcpaOptedOut(ccpaOptedOut) }
           iubendaShouldLog && console.log('Iubenda cb: GTag dataLayer push ', 'iubenda_ccpa_opted_out:' + ccpaOptedOut)
 
           if (!preference) {
@@ -192,17 +194,17 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
                 event: 'iubenda_preference_not_needed'
               })
             }
-            if ($store) { $store.dispatch('iubenda/setPreferenceNotNeeded', true) }
+            if ($store) { $store.setPreferenceNotNeeded(true) }
             iubendaShouldLog && console.log('Iubenda cb: GTag dataLayer push ', 'iubenda_preference_not_needed')
           } else {
-            if ($store) { $store.dispatch('iubenda/setPreferenceNotNeeded', false) }
+            if ($store) { $store.setPreferenceNotNeeded(false) }
             if (preference.consent === true) {
               if (dataLayer) {
                 dataLayer.push({
                   event: 'iubenda_consent_given'
                 })
               }
-              if ($store) { $store.dispatch('iubenda/setConsetGiven', true) }
+              if ($store) { $store.setConsetGiven(true) }
               iubendaShouldLog && console.log('Iubenda cb: GTag dataLayer push ', 'iubenda_consent_given')
             } else if (preference.consent === false) {
               if (dataLayer) {
@@ -210,10 +212,10 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
                   event: 'iubenda_consent_rejected'
                 })
               }
-              if ($store) { $store.dispatch('iubenda/setConsetRejected', true) }
+              if ($store) { $store.setConsetRejected(true) }
               iubendaShouldLog && console.log('Iubenda cb: GTag dataLayer push ', 'iubenda_consent_rejected')
             } else if (preference.purposes) {
-              if ($store) { $store.dispatch('iubenda/resetConsetGivenPurpose') }
+              if ($store) { $store.resetConsetGivenPurpose() }
               for (const purposeId in preference.purposes) {
                 if (preference.purposes[purposeId]) {
                   if (dataLayer) {
@@ -221,7 +223,7 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
                       event: 'iubenda_consent_given_purpose_' + purposeId
                     })
                   }
-                  if ($store) { $store.dispatch('iubenda/setConsetGivenPurpose', { iPurpose: purposeId, bValue: true }) }
+                  if ($store) { $store.setConsetGivenPurpose(+purposeId, true) }
                   iubendaShouldLog && console.log('Iubenda cb: GTag dataLayer push ', 'iubenda_consent_given_purpose_' + purposeId)
 
 

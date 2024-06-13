@@ -34,105 +34,76 @@
  * - Remarketing with Google Analytics
  *
  ********************************************************************************/
+import { defineStore } from 'pinia';
 
-export interface State {
-  log: boolean
-  preference_not_needed: boolean
-  consent_given: boolean
-  consent_rejected: boolean
-  consent_given_purpose: {
-    [key:number]: boolean
-  },
-  ccpa_opted_out: boolean
-}
+export const useIubendaStore = defineStore('iubendaStore', {
+  state: () => ({
+    log: true, // if true it logs on the console (debug)
+    preference_not_needed: false,
+    consent_given: false,
+    consent_rejected: false,
+    consent_given_purpose: {
+      1: false,
+      2: false,
+      3: false,
+      4: false,
+      5: false,
+    } as {
+      [key:number]: boolean
+    },
+    ccpa_opted_out: false,
+  }),
 
-export default {
-  namespaced: true,
-  state(): State {
-    return {
-      log: true, // if true it logs on the console (debug)
-      preference_not_needed: false,
-      consent_given: false,
-      consent_rejected: false,
-      consent_given_purpose: {
-        1: false,
-        2: false,
-        3: false,
-        4: false,
-        5: false,
-      },
-      ccpa_opted_out: false,
-    }
-  },
   actions: {
-    setShouldLog(context: any, bValue: boolean) {
-      context.commit('SET_SHOULD_LOG', bValue)
+    setShouldLog(bValue: boolean) {
+      this.log = bValue;
     },
-    setPreferenceNotNeeded(context: any, bValue: boolean) {
-      context.commit('SET_PREFERENCE_NOT_NEEDED', bValue)
+    setPreferenceNotNeeded(bValue: boolean) {
+      this.preference_not_needed = bValue;
     },
-    setConsetGiven(context: any, bValue: boolean) {
-      context.commit('SET_PREFERENCE_NOT_NEEDED', bValue)
+    setConsetGiven(bValue: boolean) {
+      this.consent_given = bValue;
     },
-    setConsetRejected(context: any, bValue: boolean) {
-      context.commit('SET_CONSENT_REJECTED', bValue)
+    setConsetRejected(bValue: boolean) {
+      this.consent_rejected = bValue;
     },
-    setConsetGivenPurpose(context: any, { iPurpose, bValue }: {iPurpose: number, bValue: boolean}) {
-      context.commit('SET_CONSENT_GIVEN_PURPOSE', { iPurpose, bValue })
+    setConsetGivenPurpose(iPurpose: number, bValue: boolean) {
+      this.consent_given_purpose[iPurpose] = bValue;
     },
-    resetConsetGivenPurpose(context: any) {
+    resetConsetGivenPurpose() {
       for (const iPurpose of [1, 2, 3, 4, 5]) {
-        context.commit('SET_CONSENT_GIVEN_PURPOSE', { iPurpose, bValue: false })
+        this.consent_given_purpose[iPurpose] = false;
       }
     },
-    setCcpaOptedOut(context: any, bValue: boolean) {
-      context.commit('SET_CCPA_OPTED_OUT', bValue)
+    setCcpaOptedOut(bValue: boolean) {
+      this.ccpa_opted_out = bValue;
     },
   },
-  mutations: {
-    SET_SHOULD_LOG(state: State, bValue: boolean) {
-      state.log = bValue
-    },
-    SET_PREFERENCE_NOT_NEEDED(state: State, bValue: boolean) {
-      state.preference_not_needed = bValue
-    },
-    SET_CONSENT_GIVEN(state: State, bValue: boolean) {
-      state.consent_given = bValue
-    },
-    SET_CONSENT_REJECTED(state: State, bValue: boolean) {
-      state.consent_rejected = bValue
-    },
-    SET_CONSENT_GIVEN_PURPOSE(state: State, { iPurpose, bValue }: {iPurpose: number, bValue: boolean}) {
-      state.consent_given_purpose[iPurpose] = bValue
-    },
-    SET_CCPA_OPTED_OUT(state: State, bValue: boolean) {
-      state.ccpa_opted_out = bValue
-    },
-  },
+
   getters: {
-    log(state: State) {
-      return state.log
-    },
-    consentGivenForPurpose1(state: State) { return consentGivenForPurpose(state, 1) },
-    consentGivenForPurpose2(state: State) { return consentGivenForPurpose(state, 2) },
-    consentGivenForPurpose3(state: State) { return consentGivenForPurpose(state, 3) },
-    consentGivenForPurpose4(state: State) { return consentGivenForPurpose(state, 4) },
-    consentGivenForPurpose5(state: State) { return consentGivenForPurpose(state, 5) },
+    consentGivenForPurpose1(state) { return consentGivenForPurpose(state, 1)},
+    consentGivenForPurpose2(state) { return consentGivenForPurpose(state, 2)},
+    consentGivenForPurpose3(state) { return consentGivenForPurpose(state, 3)},
+    consentGivenForPurpose4(state) { return consentGivenForPurpose(state, 4)},
+    consentGivenForPurpose5(state) { return consentGivenForPurpose(state, 5)},
 
-    necessaryEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose1 },
-    functionalityEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose2 },
-    experienceEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose3 },
-    measurementEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose4 },
-    marketingEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose5 },
+    necessaryEnabled() {return this.consentGivenForPurpose1},
+    functionalityEnabled() {return this.consentGivenForPurpose2},
+    experienceEnabled() {return this.consentGivenForPurpose3},
+    measurementEnabled() {return this.consentGivenForPurpose4},
+    marketingEnabled() {return this.consentGivenForPurpose5},
 
-    clickupFormsEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose2 },
-    youtubeEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose3 },
-    mauticEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose4 },
-    livechatEnabled(_state: State, getters: any) { return getters.consentGivenForPurpose2 },
-  }
-}
+    clickupFormsEnabled() {return this.consentGivenForPurpose2},
+    youtubeEnabled() {return this.consentGivenForPurpose3},
+    mauticEnabled() {return this.consentGivenForPurpose4},
+    livechatEnabled() {return this.consentGivenForPurpose2},
+  },
+});
 
-function consentGivenForPurpose(state: State, iPurpose: number) {
+function consentGivenForPurpose(state: any, iPurpose: number) : boolean {
   return !state.consent_rejected &&
-    (state.preference_not_needed || state.consent_given || state.consent_given_purpose[iPurpose])
+    (state.preference_not_needed || state.consent_given || state.consent_given_purpose[iPurpose]);
 }
+
+export type IubendaStore = ReturnType<typeof useIubendaStore>
+

@@ -1,4 +1,6 @@
-import Vue from 'vue'
+import { computed } from 'vue'
+import { useIubendaStore } from '../store/IubendaStore'
+
 declare global {
   interface Window {
     dataLayer: any
@@ -7,36 +9,47 @@ declare global {
   }
 }
 
-export default Vue.extend({
-  // TODO: could not make typescript get the $store object in vue: casting this to any for $store calls...
-  computed: {
-    iubendaShouldLog(): boolean {
-      return (this as any).$store.getters['iubenda/log']
-    },
-    clickupFormsEnabled(): boolean {
-      return (this as any).$store.getters['iubenda/clickupFormsEnabled']
-    },
-    mauticEnabled(): boolean {
-      return (this as any).$store.getters['iubenda/mauticEnabled']
-    },
-    youtubeEnabled(): boolean {
-      this.iubendaShouldLog && console.log('youtubeEnabled', (this as any).$store.getters['iubenda/youtubeEnabled'])
-      return (this as any).$store.getters['iubenda/youtubeEnabled']
-    },
-    livechatEnabled(): boolean {
-      return (this as any).$store.getters['iubenda/livechatEnabled']
-    },
+export function useIubenda() {
+  const store = useIubendaStore()
 
-    consentGivenForPurpose1(): boolean { return (this as any).$store.getters['iubenda/consentGivenForPurpose1'] },
-    consentGivenForPurpose2(): boolean { return (this as any).$store.getters['iubenda/consentGivenForPurpose2'] },
-    consentGivenForPurpose3(): boolean { return (this as any).$store.getters['iubenda/consentGivenForPurpose3'] },
-    consentGivenForPurpose4(): boolean { return (this as any).$store.getters['iubenda/consentGivenForPurpose4'] },
-    consentGivenForPurpose5(): boolean { return (this as any).$store.getters['iubenda/consentGivenForPurpose5'] },
+  const iubendaShouldLog = computed(() => store.log)
+  const clickupFormsEnabled = computed(() => store.clickupFormsEnabled)
+  const mauticEnabled = computed(() => store.mauticEnabled)
+  const youtubeEnabled = computed(() => {
+    if (iubendaShouldLog.value) {
+      console.log('youtubeEnabled', store.youtubeEnabled)
+    }
+    return store.youtubeEnabled
+  })
+  const livechatEnabled = computed(() => store.livechatEnabled)
 
-    necessaryEnabled(): boolean { return (this as any).$store.getters['iubenda/necessaryEnabled'] }, // level 1
-    functionalityEnabled(): boolean { return (this as any).$store.getters['iubenda/functionalityEnabled'] }, // level 2
-    experienceEnabled(): boolean { return (this as any).$store.getters['iubenda/experienceEnabled'] }, // level 3
-    measurementEnabled(): boolean { return (this as any).$store.getters['iubenda/measurementEnabled'] }, // level 4
-    marketingEnabled(): boolean { return (this as any).$store.getters['iubenda/marketingEnabled'] } // level 5
+  const consentGivenForPurpose1 = computed(() => store.consentGivenForPurpose1)
+  const consentGivenForPurpose2 = computed(() => store.consentGivenForPurpose2)
+  const consentGivenForPurpose3 = computed(() => store.consentGivenForPurpose3)
+  const consentGivenForPurpose4 = computed(() => store.consentGivenForPurpose4)
+  const consentGivenForPurpose5 = computed(() => store.consentGivenForPurpose5)
+
+  const necessaryEnabled      = computed(() => store.necessaryEnabled)     // level 1
+  const functionalityEnabled  = computed(() => store.functionalityEnabled) // level 2
+  const experienceEnabled     = computed(() => store.experienceEnabled)    // level 3
+  const measurementEnabled    = computed(() => store.measurementEnabled)   // level 4
+  const marketingEnabled      = computed(() => store.marketingEnabled)     // level 5
+
+  return {
+    iubendaShouldLog,
+    clickupFormsEnabled,
+    mauticEnabled,
+    youtubeEnabled,
+    livechatEnabled,
+    consentGivenForPurpose1,
+    consentGivenForPurpose2,
+    consentGivenForPurpose3,
+    consentGivenForPurpose4,
+    consentGivenForPurpose5,
+    necessaryEnabled,
+    functionalityEnabled,
+    experienceEnabled,
+    measurementEnabled,
+    marketingEnabled
   }
-})
+}
