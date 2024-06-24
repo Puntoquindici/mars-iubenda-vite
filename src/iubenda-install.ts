@@ -45,12 +45,6 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
       // window.LogRocket && window.LogRocket.init('sjxbwd/myarstudio-website');
       // console.log("Iubenda -> lvl 1  : logrocket");
 
-      // Google TagManager: with Consent mode v2 it should honor the user preferences
-      console.log("Iubenda -> GTag");
-      // @ts-ignore
-      (function (w, d, s, l, i) {w[l] = w[l] || []; w[l].push({'gtm.start':new Date().getTime(),event: 'gtm.js'}); const f = d.getElementsByTagName(s)[0];const j = d.createElement(s); const dl = l !== 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f)
-      })(window, document, 'script', 'dataLayer', 'GTM-K9HP22W')
-
       window.iub.level1 = true
       break
     case 2:
@@ -86,7 +80,7 @@ const enableLevel = function(level: number, userInfo: UserInfo) {
 }
 
 const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, $store: IubendaStore | undefined = undefined, baseUrl: string = 'https://www.myarstudio.cloud') {
-  console.log("installIubenda10", lang, iubendaShouldLog)
+  console.log("installIubenda11", lang, iubendaShouldLog)
   window.iub = {
     level1: false,
     level2: false,
@@ -276,6 +270,12 @@ const installIubenda = function(lang: string, iubendaShouldLog: boolean = true, 
       document.head.appendChild(script)
     }
   }
+
+  // Google TagManager: with Consent mode v2 it should honor the user preferences
+  console.log("Iubenda -> GTag");
+  // @ts-ignore
+  (function (w, d, s, l, i) {w[l] = w[l] || []; w[l].push({'gtm.start':new Date().getTime(),event: 'gtm.js'}); const f = d.getElementsByTagName(s)[0];const j = d.createElement(s); const dl = l !== 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f)
+  })(window, document, 'script', 'dataLayer', 'GTM-K9HP22W')
 }
 
 export default installIubenda
