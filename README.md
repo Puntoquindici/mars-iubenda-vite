@@ -7,6 +7,8 @@ There are 2 versions of build:
 
 ```sh
 yarn build
+
+pnpm build
 ```
 
 **NOTE**: Iubenda script is patched to avoid multiple H1 elements in the main body section. These files are served from the main www mars website. See `update-iubenda-patch.sh` in mars-website-nuxt.
@@ -16,9 +18,13 @@ yarn build
 ```sh
 # on this project
 yarn link
+# or
+pnpm link --global
 
 # on other project (e.g. mars-website-nuxt)
 yarn link mars-iubenda-vite
+# or
+pnpm link mars-iubenda-vite
 # to check linked packages
 ls -l node_modules | grep ^l
 ```
